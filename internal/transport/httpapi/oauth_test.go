@@ -27,7 +27,7 @@ func TestPassportJWTLoginCallbackFlagConsumptionAndLogout(t *testing.T) {
 	ctx := context.Background()
 	passwords := security.Bcrypt{Cost: 4}
 	hash, _ := passwords.Hash("SecurePass!2026")
-	u, err := db.Create(ctx, domain.User{Name: "Test", Username: "jwt_user", Email: "jwt@example.com", PasswordHash: hash, CreatedAt: time.Now()})
+	u, err := db.Create(ctx, domain.User{Name: "Test", Email: "jwt@example.com", PasswordHash: hash, CreatedAt: time.Now()})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -58,7 +58,7 @@ func TestPassportJWTLoginCallbackFlagConsumptionAndLogout(t *testing.T) {
 		h.ServeHTTP(w, r)
 		return w
 	}
-	login := do("POST", "/api/login", `{"login":"jwt_user","password":"SecurePass!2026","remember":true}`, "application/json", nil, "")
+	login := do("POST", "/api/login", `{"email":"jwt@example.com","password":"SecurePass!2026","remember":true}`, "application/json", nil, "")
 	if login.Code != 200 {
 		t.Fatal(login.Code, login.Body.String())
 	}
